@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generator</title>
+</head>
+<body>
+  <div style="display: flex;">
+    <div>
+      <button class="passwordBtn"> Generate password </button>
+      <h4 class="passwordText"></h4>
+    </div>
+    <div>
+      <button class="pinBtn"> Generate PIN </button>
+      <h4 class="pinText"></h4>
+    </div>
+  </div>
+  <script>
+
+    const CHARS = 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM0123456789!@#$%^&*()';
+    const NUMBERS = '0123456789';
+
+    const passwordBtn = document.querySelector('.passwordBtn');
+    const passwordText = document.querySelector('.passwordText');
+    const pinBtn = document.querySelector('.pinBtn');
+    const pinText = document.querySelector('.pinText');
+    
+    class Generator {
+      constructor(chars) {
+        this.chars = chars;
+      }
+
+      generate (length = 8) {
+
+        const passwordFunction = () => {
+          let password = '';
+          for (let i = 0; i < length; i++) {
+            password += this.chars[Math.floor(Math.random() * this.chars.length)];
+          }
+          return password;
+        }
+
+        const validPassword = val => {
+          const regExpArr = [/\d/, /[A-Z]/, /[a-z]/, /[!@#$%^&*()]/];
+          // [ digits, uppercase, lowercase, special chars ]
+
+          for (const reg of regExpArr) {
+            if (reg.test(this.chars) && !reg.test(val)) {
+              console.log(`RegExp: ${reg}, password: ${val}`);
+              return false;
+            }
+          }
+          return true;
+        }
+
+        let password = passwordFunction();
+
+        while (!validPassword(password)) {
+          password = passwordFunction();
+        }
+        return password;
+      }
+    }
+    
+    const newPassword = new Generator(CHARS);
+    passwordBtn.addEventListener('click', () => {
+      passwordText.innerText = newPassword.generate();
+    })
+
+    const newPIN = new Generator(NUMBERS);
+    pinBtn.addEventListener('click', () => {
+      pinText.innerText = newPIN.generate(4);
+    })
+
+  </script>
+</body>
+</html>
